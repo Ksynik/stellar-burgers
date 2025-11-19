@@ -22,8 +22,12 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
             }`
           }
         >
-          <BurgerIcon type={'primary'} />
-          <span className='ml-2'>Конструктор</span>
+          {({ isActive }: { isActive: boolean }) => (
+            <>
+              <BurgerIcon type={isActive ? 'primary' : 'secondary'} />
+              <span className='ml-2'>Конструктор</span>
+            </>
+          )}
         </NavLink>
 
         <NavLink
@@ -34,8 +38,12 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
             }`
           }
         >
-          <ListIcon type={'primary'} />
-          <span className='ml-2'>Лента заказов</span>
+          {({ isActive }: { isActive: boolean }) => (
+            <>
+              <ListIcon type={isActive ? 'primary' : 'secondary'} />
+              <span className='ml-2'>Лента заказов</span>
+            </>
+          )}
         </NavLink>
       </div>
       <div className={styles.logo}>
@@ -50,8 +58,12 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
             }`
           }
         >
-          <ProfileIcon type={'primary'} />
-          <span className='ml-2'>{userName || 'Личный кабинет'}</span>
+          {({ isActive }: { isActive: boolean }) => (
+            <>
+              <ProfileIcon type={isActive ? 'primary' : 'secondary'} />
+              <span className='ml-2'>{userName || 'Личный кабинет'}</span>
+            </>
+          )}
         </NavLink>
       </div>
     </nav>
