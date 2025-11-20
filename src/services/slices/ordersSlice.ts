@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TOrder } from '../../utils/types';
-import { orderBurgerApi, getOrdersApi } from '../../utils/burger-api';
+import {
+  orderBurgerApi,
+  getOrdersApi,
+  getOrderByNumberApi
+} from '../../utils/burger-api';
+import { clearConstructor } from './constructorSlice';
 
 interface OrdersState {
   orders: TOrder[];
@@ -20,8 +25,9 @@ const initialState: OrdersState = {
 
 export const createOrder = createAsyncThunk<TOrder, string[]>(
   'orders/create',
-  async (ingredients) => {
+  async (ingredients, thunkAPI) => {
     const res = await orderBurgerApi(ingredients);
+    thunkAPI.dispatch(clearConstructor());
     return res.order;
   }
 );
@@ -31,6 +37,18 @@ export const getUserOrders = createAsyncThunk<TOrder[]>(
   async () => {
     const orders = await getOrdersApi();
     return orders;
+  }
+);
+
+export const getOrderByNumber = createAsyncThunk<TOrder, number>(
+  'orders/getOrderByNumber',
+  async (number) => {
+    const res = await getOrderByNumberApi(number);
+    // API returns { orders: TOrder[] }
+    if (res && (res as any).orders && (res as any).orders.length) {
+      return (res as any).orders[0];
+    }
+    return Promise.reject(new Error('Order not found'));
   }
 );
 
@@ -64,6 +82,21 @@ const ordersSlice = createSlice({
       .addCase(getUserOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
+      })
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getOrderByNumber.fulfilled,
+        (state, action: PayloadAction<TOrder>) => {
+          state.loading = false;
+          state.currentOrder = action.payload;
+        }
+      )
+      .addCase(getOrderByNumber.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Ошибка загрузки заказа';
       })
       .addCase(
         getUserOrders.fulfilled,
