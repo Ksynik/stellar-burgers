@@ -11,7 +11,6 @@ declare global {
 
 Cypress.Commands.add('setupAuth', () => {
   cy.window().then((win) => {
-    win.localStorage.setItem('accessToken', 'mock-access-token');
     win.localStorage.setItem('refreshToken', 'mock-refresh-token');
   });
   cy.setCookie('accessToken', 'mock-access-token');
