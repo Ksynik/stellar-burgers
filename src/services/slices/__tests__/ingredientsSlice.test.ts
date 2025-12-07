@@ -2,7 +2,7 @@ import reducer, { fetchIngredients } from '../ingredientsSlice';
 
 describe('ingredientsSlice', () => {
   it('should handle initial state', () => {
-    const initial = reducer(undefined, { type: 'unknown' } as any);
+    const initial = reducer(undefined, { type: 'unknown' });
     expect(initial.ingredients).toEqual([]);
     expect(initial.loading).toBe(false);
     expect(initial.error).toBeNull();
@@ -19,10 +19,12 @@ describe('ingredientsSlice', () => {
     const state = reducer(undefined, { type: fetchIngredients.fulfilled.type, payload });
     expect(state.loading).toBe(false);
     expect(state.ingredients).toEqual(payload);
+    expect(state.error).toBeNull();
   });
 
   it('should handle fetchIngredients.rejected', () => {
-    const state = reducer(undefined, { type: fetchIngredients.rejected.type, error: { message: 'err' } });
+    const action = { type: fetchIngredients.rejected.type, error: { message: 'err' } };
+    const state = reducer(undefined, action);
     expect(state.loading).toBe(false);
     expect(state.error).toBe('err');
   });
